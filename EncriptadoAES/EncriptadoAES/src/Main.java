@@ -1,4 +1,3 @@
-package com.encriptadoAES;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;

@@ -1,5 +1,3 @@
-package com.encriptadoAES;
-
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
