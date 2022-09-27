@@ -1,4 +1,5 @@
 # EncriptadorAES
+###### Este proyecto se ha creado para el Hackathon de OpenBootCamp.
 
 Programa que permite encriptar cualquier fichero siguiendo el estándar de seguridad AES. Sólo abre un terminal, abre el directorio donde hayas copiado
 el programa y ejecuta Main.java tecleando:
