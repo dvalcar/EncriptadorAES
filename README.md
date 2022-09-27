@@ -11,6 +11,10 @@ Te preguntará si quieres encriptar o desencriptar y a continuación la ruta y l
 
 Tener java instalado y ¡nada más!
 
+## ¿Como descargar la aplicación?
+
+Descarga los ficheros .class del directorio out/production/EncriptadoAES en tu ordenador
+
 ## ¿Como ejecutar la aplicación?
 
 Abre tu terminal y accede al directorio donde hayas descargado el programa y ejecutalo con:
