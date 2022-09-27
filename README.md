@@ -7,13 +7,16 @@ el programa y ejecuta la clase Encripta tecleando:
 java Encripta
 Te preguntará si quieres encriptar o desencriptar y a continuación la ruta y la clave y ¡listo!
 
+
 ## ¿Que se necesita?
 
 Tener java instalado y ¡nada más!
 
+
 ## ¿Como descargar la aplicación?
 
 Descarga los ficheros .class del directorio out/production/EncriptadoAES en tu ordenador
+
 
 ## ¿Como ejecutar la aplicación?
 
