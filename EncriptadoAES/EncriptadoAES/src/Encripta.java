@@ -89,7 +89,7 @@ public class Encripta {
     }
 
     /**
-     * Función para pregunta por la contraseña
+     * Función para preguntar por la contraseña
      * @return Devuelve la contraseña en formato String
      */
     private static String preguntarPwd(){

@@ -21,6 +21,14 @@ import java.util.Base64;
  */
 
 public class EncriptadorAES {
+
+    /**
+     * Función para codificar la clave proporcionada por el usuario
+     * @param clave de clase String que es la proporcionada por el usuario
+     * @return Devuelve la clave codificada en formato SecretKeySpec
+     * @throws UnsupportedEncodingException
+     * @throws NoSuchAlgorithmException
+     */
     private SecretKeySpec crearClave(String clave) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         byte[] claveEncriptacion = clave.getBytes("UTF-8");
 
@@ -31,7 +39,20 @@ public class EncriptadorAES {
         return new SecretKeySpec(claveEncriptacion, 0, 16, "AES");
     }
 
-    // Texto a encriptar
+    /**
+     * Función que realiza la encriptación creando un archivo con el mismo nombre del fichero original
+     * @param datos array de bytes con la información del fichero que se quiere encriptar
+     * @param claveSecreta proporcionada por el usuario en formato String
+     * @param nombreFichero que se va a encriptar en formato String
+     * @param iv Vector de inicialización en formato String
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeyException
+     * @throws NoSuchPaddingException
+     * @throws IllegalBlockSizeException
+     * @throws BadPaddingException
+     * @throws IOException
+     * @throws InvalidAlgorithmParameterException
+     */
     public void encriptar(byte[] datos, String claveSecreta, String nombreFichero, String iv) throws NoSuchAlgorithmException, InvalidKeyException,
             NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, IOException, InvalidAlgorithmParameterException {
         SecretKeySpec secretKey = this.crearClave(claveSecreta);
@@ -49,6 +70,20 @@ public class EncriptadorAES {
         ps.close();
     }
 
+    /**
+     * Función para desencriptar que crea un fichero con el nombre del fichero original que se encripto
+     * @param datosEncriptados array de bytes que contiene la información del fichero encriptado
+     * @param claveSecreta proporcionada por el usuario en formato String
+     * @param nombre del fichero que se va a crear cuando ya esté desencriptado
+     * @param iv Vector de inicialización en formato String
+     * @throws IOException
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeyException
+     * @throws NoSuchPaddingException
+     * @throws IllegalBlockSizeException
+     * @throws BadPaddingException
+     * @throws InvalidAlgorithmParameterException
+     */
     public void desencriptar(byte[] datosEncriptados, String claveSecreta, String nombre, String iv) throws IOException,
             NoSuchAlgorithmException, InvalidKeyException, NoSuchPaddingException, IllegalBlockSizeException,
             BadPaddingException, InvalidAlgorithmParameterException {
