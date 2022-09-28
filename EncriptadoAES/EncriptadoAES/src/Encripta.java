@@ -3,6 +3,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.io.*;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.InputMismatchException;
@@ -17,9 +18,10 @@ import java.util.logging.Logger;
  */
 public class Encripta {
     public static void main(String[] args) {
+        String iv = "0123456789ABCDEF"; // vector de inicialización
+        int opcion;
         try {
             EncriptadorAES aes = new EncriptadorAES();
-            int opcion;
 
             do {
                 System.out.println("1 - Encripta");
@@ -40,7 +42,7 @@ public class Encripta {
                         byte[] datosIn = in.readAllBytes();
 
                         //Encriptado
-                        aes.encriptar(datosIn, preguntarPwd(), nombre);
+                        aes.encriptar(datosIn, preguntarPwd(), nombre, iv);
                         in.close();
                         break;
                     case 2:
@@ -58,7 +60,7 @@ public class Encripta {
 
 
                         byte[] datosInEncriptado = inEncriptado.readAllBytes();
-                        aes.desencriptar(datosInEncriptado, preguntarPwd(), nombreDestino);
+                        aes.desencriptar(datosInEncriptado, preguntarPwd(), nombreDestino, iv);
                         inEncriptado.close();
                         break;
                     case 3:
@@ -80,9 +82,16 @@ public class Encripta {
             System.out.println(e.getMessage());
         }catch (InputMismatchException e){
             System.out.println("Opción no valida");
+        } catch (InvalidAlgorithmParameterException e) {
+            throw new RuntimeException(e);
         }
 
     }
+
+    /**
+     * Función para pregunta por la contraseña
+     * @return Devuelve la contraseña en formato String
+     */
     private static String preguntarPwd(){
         System.out.println("Introduce la contraseña:");
         Scanner scanner= new Scanner(System.in);

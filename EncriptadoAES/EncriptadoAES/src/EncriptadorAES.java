@@ -1,7 +1,9 @@
 import javax.crypto.*;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -30,15 +32,15 @@ public class EncriptadorAES {
     }
 
     // Texto a encriptar
-    public void encriptar(byte[] datos, String claveSecreta, String nombreFichero) throws NoSuchAlgorithmException, InvalidKeyException,
-            NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, IOException {
+    public void encriptar(byte[] datos, String claveSecreta, String nombreFichero, String iv) throws NoSuchAlgorithmException, InvalidKeyException,
+            NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, IOException, InvalidAlgorithmParameterException {
         SecretKeySpec secretKey = this.crearClave(claveSecreta);
 
         // Se obtiene un cifrador AES
-        Cipher aes = Cipher.getInstance("AES/ECB/PKCS5Padding");
-
+        Cipher aes = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        IvParameterSpec ivParameterSpec = new IvParameterSpec(iv.getBytes());
         // Se inicializa para encriptacion
-        aes.init(Cipher.ENCRYPT_MODE, secretKey);
+        aes.init(Cipher.ENCRYPT_MODE, secretKey,ivParameterSpec);
         byte[] bytesEncriptados = aes.doFinal(datos);
 
         //Escritura en fichero
@@ -47,13 +49,14 @@ public class EncriptadorAES {
         ps.close();
     }
 
-    public void desencriptar(byte[] datosEncriptados, String claveSecreta, String nombre) throws IOException,
+    public void desencriptar(byte[] datosEncriptados, String claveSecreta, String nombre, String iv) throws IOException,
             NoSuchAlgorithmException, InvalidKeyException, NoSuchPaddingException, IllegalBlockSizeException,
-            BadPaddingException {
+            BadPaddingException, InvalidAlgorithmParameterException {
         SecretKeySpec secretKey = this.crearClave(claveSecreta);
         // Se iniciliza el cifrador para desencriptar, con la misma clave y se desencripta
-        Cipher aes = Cipher.getInstance("AES/ECB/PKCS5Padding");
-        aes.init(Cipher.DECRYPT_MODE, secretKey);
+        Cipher aes = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        IvParameterSpec ivParameterSpec = new IvParameterSpec(iv.getBytes());
+        aes.init(Cipher.DECRYPT_MODE, secretKey, ivParameterSpec);
         byte[] datosDesencriptados = aes.doFinal(datosEncriptados);
 
         //Escritura en fichero para obtener el original
