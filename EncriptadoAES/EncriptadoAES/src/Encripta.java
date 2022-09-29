@@ -13,89 +13,121 @@ import java.util.logging.Logger;
 
 /**
  * Programa que permite encriptar/desencriptar en formato AES un fichero cualquiera
+ *
  * @author DValcar
  * @email dvalcar@gmail.com
  */
 public class Encripta {
     public static void main(String[] args) {
-        String iv = "0123456789ABCDEF"; // vector de inicialización
+        String iv = "k-l3wPz=4Lx&0:fD"; // vector de inicialización
         int opcion;
-        try {
-            EncriptadorAES aes = new EncriptadorAES();
-
-            do {
-                System.out.println("1 - Encripta");
-                System.out.println("2 - Desencripta");
-                System.out.println("3 - Salir");
-                System.out.println("\nElige opcion 1, 2 o 3:");
-                Scanner scanner= new Scanner(System.in);
-                opcion= scanner.nextInt();
-
-                switch (opcion) {
-                    case 1:
-                        System.out.println("Introduce la ruta de entrada del archivo a encriptar:");
-                        String origen = scanner.next();
-                        File file = new File(origen);
-                        String nombre=file.getName();
-                        System.out.println(nombre);
+        EncriptadorAES aes = new EncriptadorAES();
+        Scanner scanner = new Scanner(System.in);
+        do {
+            opcion = menu();
+            switch (opcion) {
+                case 1 -> {
+                    System.out.println("Introduce la ruta de entrada del archivo a encriptar:");
+                    String origen = scanner.next();
+                    File file = new File(origen);
+                    String nombre = file.getName();
+                    try {
                         InputStream in = new FileInputStream(origen);
                         byte[] datosIn = in.readAllBytes();
+                        try {
+                            //Encriptado
+                            aes.encriptar(datosIn, preguntarPwd(), nombre, iv);
+                            in.close();
+                            System.out.println("Fichero encriptado.");
+                        } catch (UnsupportedEncodingException | NoSuchAlgorithmException | NoSuchPaddingException |
+                                 UnsupportedOperationException | InvalidAlgorithmParameterException |
+                                 IllegalStateException | IllegalBlockSizeException | BadPaddingException |
+                                 InvalidKeyException e) {
+                            Logger.getLogger(EncriptadorAES.class.getName()).log(Level.SEVERE, null, e);
+                        } catch (FileNotFoundException e) {
+                            System.out.println("Fallo al crear el fichero encriptado.");
+                        }
+                    } catch (FileNotFoundException e) {
+                        System.out.println("No se encuentra el fichero.");
+                    } catch (IOException e) {
+                        System.out.println("Fallo al leer el fichero.");
+                    }
 
-                        //Encriptado
-                        aes.encriptar(datosIn, preguntarPwd(), nombre, iv);
-                        in.close();
-                        break;
-                    case 2:
-                        System.out.println("Introduce el nombre del fichero a desencriptar");
-                        String destino=scanner.next();
-                        File ficheroDestino = new File(destino);
-                        String nombreDestino=ficheroDestino.getName();
+                }
+                case 2 -> {
+                    try {
+                        int extension = -1;
+                        String destino = "";
+                        String nombreDestino = "";
+                        do {
+                            System.out.println("Introduce el nombre del fichero a desencriptar");
+                            destino = scanner.next();
+                            File ficheroDestino = new File(destino);
+                            nombreDestino = ficheroDestino.getName();
 
+                            //Comprobar que el fichero proporcionado tiene extension .dat
+                            extension = nombreDestino.indexOf(".dat");
+                            if (extension == -1) {
+                                System.out.println("Fichero incorrecto. Debe tener extensión .dat");
+                            }
+                        } while (extension == -1);
 
                         //Desencriptado
                         InputStream inEncriptado = new FileInputStream(destino);
                         //Quitar extension .dat
-                        nombreDestino=nombreDestino.substring(0,nombreDestino.length()-4);
-                        System.out.println(nombreDestino);
-
+                        nombreDestino = nombreDestino.substring(0, nombreDestino.length() - 4);
 
                         byte[] datosInEncriptado = inEncriptado.readAllBytes();
                         aes.desencriptar(datosInEncriptado, preguntarPwd(), nombreDestino, iv);
                         inEncriptado.close();
-                        break;
-                    case 3:
-                        System.out.println("Adiós..");
-                        break;
-                    default:
-                        System.out.println("Opción no válida, introduzca 1 para encriptar o 2 para desencriptar.");
+                        System.out.println("Fichero desencriptado.");
+                    } catch (InvalidAlgorithmParameterException | NoSuchPaddingException | IllegalBlockSizeException |
+                             NoSuchAlgorithmException | BadPaddingException | InvalidKeyException e) {
+                        System.out.println("Fichero no valido, no encriptado.");
+                    } catch (FileNotFoundException | NullPointerException e) {
+                        System.out.println("No se encuentra el fichero encriptado.");
+                    } catch (IOException e) {
+                        System.out.println("Fallo al leer el fichero encriptado.");
+                    }
+
                 }
-            }while (opcion!=3);
-
-        } catch (UnsupportedEncodingException | NoSuchAlgorithmException |
-                 NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException e) {
-            Logger.getLogger(EncriptadorAES.class.getName()).log(Level.SEVERE, null, e);
-        } catch (InvalidKeyException e) {
-            System.out.println("Invalid key: " + e.getMessage());
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }catch (InputMismatchException e){
-            System.out.println("Opción no valida");
-        } catch (InvalidAlgorithmParameterException e) {
-            throw new RuntimeException(e);
-        }
-
+                case 3 -> System.out.println("Adiós..");
+                default -> System.out.println("Opción no válida, introduzca 1 para encriptar o 2 para desencriptar.");
+            }
+        } while (opcion != 3);
     }
 
     /**
      * Función para preguntar por la contraseña
+     *
      * @return Devuelve la contraseña en formato String
      */
-    private static String preguntarPwd(){
+    private static String preguntarPwd() {
         System.out.println("Introduce la contraseña:");
-        Scanner scanner= new Scanner(System.in);
-        final String clave = scanner.next();
-        return clave;
+        Scanner scanner = new Scanner(System.in);
+        return scanner.next();
+    }
+
+    /**
+     * Función que devuelve la opción elegida por el usuario
+     *
+     * @return Se devuelve la opción elegida en un int
+     */
+    private static int menu() {
+
+        int opcion = 0;
+        System.out.println("1 - Encripta");
+        System.out.println("2 - Desencripta");
+        System.out.println("3 - Salir");
+        System.out.println("\nElige opcion 1, 2 o 3:");
+        do {
+            try {
+                Scanner scanner = new Scanner(System.in);
+                opcion = scanner.nextInt();
+            } catch (InputMismatchException e) {
+                System.out.println("¡Cuidado! Solo puedes insertar 1, 2 o 3.");
+            }
+        } while (opcion != 1 & opcion != 2 & opcion != 3);
+        return opcion;
     }
 }
